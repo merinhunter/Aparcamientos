@@ -22,6 +22,7 @@ $(document).ready(function() {
     $("#collections_a").attr("data-toggle", "tab");
     $("#facilities_li").removeClass("disabled");
     $("#facilities_a").attr("data-toggle", "tab");
+    $( "#draggable" ).draggable();
 
     getParkings();
   });
