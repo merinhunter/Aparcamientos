@@ -9,6 +9,10 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+  <!-- Slick CSS -->
+  <!--link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css" type="text/css"/-->
   <link rel="stylesheet" href="main.css" type="text/css" />
 </head>
 <body>
@@ -39,8 +43,7 @@
         <table>
           <tr>
             <td rowspan="2">
-              <div id="collections_scroll" class=scrollable>
-                <li class="ui-widget-content">pepe</li>
+              <div id="facilities_collections_scroll" class=scrollable>
                 <input class="btn btn-default" type="button" value="Input">
                 <input class="btn btn-default" type="button" value="Input">
                 <input class="btn btn-default" type="button" value="Input">
@@ -62,11 +65,28 @@
                 <input class="btn btn-default" type="button" value="Input">
               </div>
             </td>
-            <td></td>
-            <td rowspan="2"></td>
+            <td>
+              <h2>Colecciones</h2>
+              <div id="collections_scroll" class=scrollable></div>
+            </td>
+            <td rowspan="2">
+              <div id="">
+              </div>
+            </td>
           </tr>
           <tr>
-            <td></td>
+            <td>
+              <div>
+                <h1>Nueva colección</h1>
+                <br>
+                <form>
+                 Nombre de la colección:<br>
+                 <input type="text" name="collection-name" id="collection-name">
+                 <br><br>
+                 <button type="button" class="btn btn-primary btn-lg" id="create-collection">Crear colección</button>
+                </form>
+              </div>
+            </td>
           </tr>
         </table>
       </div>
@@ -94,6 +114,10 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   <!-- Bootstrap JS -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+  <!-- Slick JS -->
+  <!--script src="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js" type="text/javascript"></script-->
   <script src="main.js" type="text/javascript"></script>
 </body>
 </html>

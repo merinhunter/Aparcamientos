@@ -2856,27 +2856,6 @@
 			"organization-name": "Aparcamiento para residentes. Doménico Scarlatti"
 		}
 	}, {
-		"@id": "http://datos.madrid.es/egob/catalogo/tipo/entidadesyorganismos/7410134-aparcamiento-residentes-greco",
-		"@type": "http://datos.madrid.es/egob/kos/entidadesYorganismos/AparcamientosResidentes",
-		"id": "7410134",
-		"title": "Aparcamiento para residentes. El Greco",
-		"relation": "http://www.madrid.es/sites/v/index.jsp?vgnextchannel=9e4c43db40317010VgnVCM100000dc0ca8c0RCRD&vgnextoid=c0869f29bb305410VgnVCM1000000b205a0aRCRD",
-		"address": {
-			"district": {
-				"@id": "http://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/Latina"
-			},
-			"locality": "MADRID",
-			"postal-code": "",
-			"street-address": "CALLE El Greco 29"
-		},
-		"organization": {
-			"organization-desc": "Plazas: 225 Abierto 24 horas Titularidad: Ayuntamiento de Madrid",
-			"accesibility": "0",
-			"schedule": "",
-			"services": "",
-			"organization-name": "Aparcamiento para residentes. El Greco"
-		}
-	}, {
 		"@id": "http://datos.madrid.es/egob/catalogo/tipo/entidadesyorganismos/4831001-aparcamiento-residentes-elvira",
 		"@type": "http://datos.madrid.es/egob/kos/entidadesYorganismos/AparcamientosResidentes",
 		"id": "4831001",
@@ -7365,30 +7344,6 @@
 			"schedule": "",
 			"services": "",
 			"organization-name": "Aparcamiento para residentes. Vista Alegre"
-		}
-	}, {
-		"@id": "http://datos.madrid.es/egob/catalogo/tipo/entidadesyorganismos/13493-aparcamiento-residentes-vital-aza",
-		"@type": "http://datos.madrid.es/egob/kos/entidadesYorganismos/AparcamientosResidentes",
-		"id": "13493",
-		"title": "Aparcamiento para residentes. Vital Aza",
-		"relation": "http://www.madrid.es/sites/v/index.jsp?vgnextchannel=9e4c43db40317010VgnVCM100000dc0ca8c0RCRD&vgnextoid=30627339ae51c010VgnVCM2000000c205a0aRCRD",
-		"address": {
-			"district": {
-				"@id": "http://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/CiudadLineal"
-			},
-			"area": {
-				"@id": "http://datos.madrid.es/egob/kos/Provincia/Madrid/Municipio/Madrid/Distrito/CiudadLineal/Barrio/PuebloNuevo"
-			},
-			"locality": "MADRID",
-			"postal-code": "28017",
-			"street-address": "CALLE VITAL AZA 10"
-		},
-		"organization": {
-			"organization-desc": "Plazas : 202 Abierto 24 horas Titularidad : Ayuntamiento de Madrid",
-			"accesibility": "0",
-			"schedule": "",
-			"services": "",
-			"organization-name": "Aparcamiento para residentes. Vital Aza"
 		}
 	}, {
 		"@id": "http://datos.madrid.es/egob/catalogo/tipo/entidadesyorganismos/61831-aparcamiento-residentes-via-carpetana",
