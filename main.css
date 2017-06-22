@@ -50,12 +50,23 @@ td > div {
   max-height: 227px;
 }
 
-td > div.scrollable {
+td div.scrollable {
     max-height: 450px;
     overflow-y: scroll;
 }
 
 #collections_scroll {
+  min-height: 175px;
+  max-height: 175px;
+  overflow-y: scroll;
+}
+
+#facilities td > div {
+  min-height: 450px;
+  max-height: 450px;
+}
+
+#collection_home .scrollable {
   min-height: 175px;
   max-height: 175px;
   overflow-y: scroll;
@@ -85,6 +96,6 @@ input {
   margin: auto;
 }
 
-td h2 {
+td h2, td h3 {
   margin: 0 0 5px 0;
 }

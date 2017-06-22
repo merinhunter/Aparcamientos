@@ -50,8 +50,8 @@ function getCollectionByName(name) {
   return result[0];
 }
 
-function getParkingByID(id) {
-  var result = $.grep(parkings, function(e){return e.id == id;});
+function getParkingByName(name) {
+  var result = $.grep(parkings, function(e){return e.title == name;});
   return result[0];
 }
 
@@ -63,7 +63,7 @@ function markCollection() {
 }
 
 function markSelection() {
-  var parking = getParkingByID(this.id);
+  var parking = getParkingByName(this.value);
 
   insertInMap(parking);
   setMain(parking);
@@ -71,9 +71,10 @@ function markSelection() {
 
 function setMain(parking) {
   var descNode = document.getElementById("description_home");
-  while (descNode.firstChild) {
+  descNode.innerHTML = "";
+  /*while (descNode.firstChild) {
     descNode.removeChild(descNode.firstChild);
-  }
+  }*/
 
   var name = document.createElement('h2');
   name.innerHTML = parking.title;
@@ -97,7 +98,38 @@ function setMain(parking) {
 }
 
 function setCollection(collection) {
-  var
+  document.getElementById("collection-info").innerHTML = "";
+  document.getElementById("collection_home").innerHTML = "";
+
+  var title_collection = document.createElement('h1');
+  title_collection.innerHTML = collection.name;
+  document.getElementById("collection-info").appendChild(title_collection);
+
+  var title_home = document.createElement('h3');
+  title_home.innerHTML = collection.name;
+  document.getElementById("collection_home").appendChild(title_home);
+
+  var list_collections_home = document.createElement('div');
+
+  var list = document.createElement('div');
+
+  $.each(collection.parkings, function(i, item) {
+    var input = document.createElement('input');
+    input.className = "btn btn-default";
+    input.type = "button";
+    input.value = item.title;
+    input.onclick = markSelection;
+
+    list_collections_home.appendChild(input);
+
+    var node = document.createElement('h3');
+    node.innerHTML = item.title;
+
+    list.appendChild(node);
+  });
+
+  document.getElementById("collection_home").appendChild(list_collections_home);
+  document.getElementById("collection-info").appendChild(list);
 }
 
 function setCarousel() {
@@ -135,7 +167,6 @@ function setParkings() {
     input.className = "btn btn-default";
     input.type = "button";
     input.value = item.title;
-    input.id = item.id;
     input.onclick = markSelection;
 
     document.getElementById("home_scroll").appendChild(input);
