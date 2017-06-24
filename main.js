@@ -3,6 +3,7 @@ var carouselHTML = '<ol id ="carousel-indicators" class="carousel-indicators"></
 var parkings=[];
 var images=[];
 var collections=[];
+var gUsers=[];
 var map;
 
 function Collection(name) {
@@ -18,11 +19,16 @@ function Facility(parking) {
   this.street = parking.address["street-address"];
   this.coordinates = new Coordinates(parking.location);
   this.description = parking.organization["organization-desc"];
+  this.gUsers = [];
 }
 
 function Coordinates(location) {
   this.latitude = location.latitude;
   this.longitude = location.longitude;
+}
+
+function GUser(name) {
+  this.name = name;
 }
 
 function getParkings(callback) {
@@ -55,11 +61,17 @@ function getParkingByName(name) {
   return result[0];
 }
 
+function getUserByName(name) {
+  var result = $.grep(gUsers, function(e){return e.name == name;});
+  return result[0];
+}
+
 function markCollection() {
   //console.log(this.value);
   var collection = getCollectionByName(this.value);
 
-  setCollection(collection);
+  setCollectionInfo(collection);
+  setCollectionHome(collection);
 }
 
 function markSelection() {
@@ -67,6 +79,72 @@ function markSelection() {
 
   insertInMap(parking);
   setMain(parking);
+  setInfo(parking);
+  setUsers(parking);
+}
+
+function setUsers(parking) {
+  document.getElementById("users_asigned").innerHTML = "";
+
+  var list = document.createElement('div');
+  list.className = "droppable";
+
+  $.each(parking.gUsers, function(i, item) {
+    var node = document.createElement('input');
+    node.className = "btn btn-default";
+    node.type = "button";
+    node.value = item.name;
+
+    list.appendChild(node);
+  });
+
+  $(list).droppable({
+    drop: function( event, ui ) {
+      var name = ui.draggable[0].innerHTML;
+
+      if(!isAsigned(name, parking)) {
+        parking.gUsers.push(getUserByName(name));
+
+        setUsers(parking);
+      }
+    }
+  });
+
+  document.getElementById("users_asigned").appendChild(list);
+}
+
+function setInfo(parking) {
+  var infoNode = document.getElementById("description_info");
+  infoNode.innerHTML = "";
+
+  var name = document.createElement('h1');
+  name.innerHTML = parking.title;
+
+  var address = document.createElement('h3');
+  address.innerHTML = parking.street + ", " + parking.locality;
+
+  var pc = document.createElement('h3');
+  pc.innerHTML = parking.pc;
+
+  var description = document.createElement('h4');
+  description.innerHTML = parking.description;
+
+  var latitude = document.createElement('h5');
+  var latitude_text = document.createElement('i');
+  latitude_text.innerHTML = "Latitud: " + parking.coordinates.latitude;
+  latitude.appendChild(latitude_text);
+
+  var longitude = document.createElement('h5');
+  var longitude_text = document.createElement('i');
+  longitude_text.innerHTML = "Longitud: " + parking.coordinates.longitude;
+  longitude.appendChild(longitude_text);
+
+  infoNode.appendChild(name);
+  infoNode.appendChild(address);
+  infoNode.appendChild(pc);
+  infoNode.appendChild(description);
+  infoNode.appendChild(latitude);
+  infoNode.appendChild(longitude);
 }
 
 function setMain(parking) {
@@ -97,21 +175,15 @@ function setMain(parking) {
   });
 }
 
-function setCollection(collection) {
-  document.getElementById("collection-info").innerHTML = "";
+function setCollectionHome(collection) {
   document.getElementById("collection_home").innerHTML = "";
 
-  var title_collection = document.createElement('h1');
-  title_collection.innerHTML = collection.name;
-  document.getElementById("collection-info").appendChild(title_collection);
-
-  var title_home = document.createElement('h3');
-  title_home.innerHTML = collection.name;
-  document.getElementById("collection_home").appendChild(title_home);
-
-  var list_collections_home = document.createElement('div');
+  var title = document.createElement('h3');
+  title.innerHTML = collection.name;
+  document.getElementById("collection_home").appendChild(title);
 
   var list = document.createElement('div');
+  list.className = "scrollable";
 
   $.each(collection.parkings, function(i, item) {
     var input = document.createElement('input');
@@ -120,20 +192,111 @@ function setCollection(collection) {
     input.value = item.title;
     input.onclick = markSelection;
 
-    list_collections_home.appendChild(input);
+    list.appendChild(input);
+  });
 
-    var node = document.createElement('h3');
-    node.innerHTML = item.title;
+  document.getElementById("collection_home").appendChild(list);
+}
+
+function setCollectionInfo(collection) {
+  document.getElementById("collection-info").innerHTML = "";
+  //document.getElementById("collection_home").innerHTML = "";
+
+  var title = document.createElement('h1');
+  title.innerHTML = collection.name;
+  document.getElementById("collection-info").appendChild(title);
+
+  /*var title_home = document.createElement('h3');
+  title_home.innerHTML = collection.name;
+  document.getElementById("collection_home").appendChild(title_home);*/
+
+  /*var list_collections_home = document.createElement('div');
+  list_collections_home.className = "scrollable";*/
+
+  var list = document.createElement('div');
+  list.className = "droppable";
+
+  $.each(collection.parkings, function(i, item) {
+    /*var input = document.createElement('input');
+    input.className = "btn btn-default";
+    input.type = "button";
+    input.value = item.title;
+    input.onclick = markSelection;
+
+    list_collections_home.appendChild(input);*/
+
+    var node = document.createElement('input');
+    node.className = "btn btn-default";
+    node.type = "button";
+    node.value = item.title;
 
     list.appendChild(node);
   });
 
-  document.getElementById("collection_home").appendChild(list_collections_home);
+  $(list).droppable({
+    drop: function( event, ui ) {
+      //console.log(ui.draggable[0].innerHTML);
+      var name = ui.draggable[0].innerHTML;
+
+      if(!isInCollection(name, collection)) {
+        collection.parkings.push(getParkingByName(name));
+
+        /*var input = document.createElement('input');
+        input.className = "btn btn-default";
+        input.type = "button";
+        input.value = name;
+        input.onclick = markSelection;
+        list_collections_home.appendChild(input);
+
+        var node = document.createElement('input');
+        node.className = "btn btn-default";
+        node.type = "button";
+        node.value = name;
+        list.appendChild(node);*/
+
+        setCollectionHome(collection);
+        setCollectionInfo(collection);
+      }
+    }
+  });
+
+  //document.getElementById("collection_home").appendChild(list_collections_home);
   document.getElementById("collection-info").appendChild(list);
 }
 
+function updateCollectionsLists(name) {
+  var input = document.createElement('input');
+  input.className = "btn btn-default";
+  input.type = "button";
+  input.value = name;
+  input.onclick = markSelection;
+  list_collections_home.appendChild(input);
+
+  var node = document.createElement('input');
+  node.className = "btn btn-default";
+  node.type = "button";
+  node.value = name;
+  list.appendChild(node);
+}
+
+function isInCollection(name, collection) {
+  var result = $.grep(collection.parkings, function(e){return e.title == name;});
+  if (result.length == 0) {
+    return false;
+  }
+  return true;
+}
+
+function isAsigned(name, parking) {
+  var result = $.grep(parking.gUsers, function(e){return e.name == name;});
+  if (result.length == 0) {
+    return false;
+  }
+  return true;
+}
+
 function setCarousel() {
-  $("#carousel_home").html(carouselHTML);
+  //$("#carousel_home").html(carouselHTML);
   document.getElementById("carousel-indicators").innerHTML = "";
   document.getElementById("carousel-inner").innerHTML = "";
 
@@ -170,6 +333,16 @@ function setParkings() {
     input.onclick = markSelection;
 
     document.getElementById("home_scroll").appendChild(input);
+
+    var div = document.createElement('div');
+    div.className = "btn btn-default draggable";
+    div.innerHTML = item.title;
+    $(div).draggable({revert: 'invalid',
+                      containment: 'document',
+                      scroll: false,
+                      helper: 'clone'});
+
+    document.getElementById("facilities_collections_scroll").appendChild(div);
   });
 }
 
@@ -236,7 +409,8 @@ $(document).ready(function() {
     $("#collections_a").attr("data-toggle", "tab");
     $("#facilities_li").removeClass("disabled");
     $("#facilities_a").attr("data-toggle", "tab");
-    $("#draggable").draggable();
+    $("#carousel_home").html(carouselHTML);
+    //$("#draggable").draggable();
 
     $("#create-collection").click(function() {
       var name = $('#collection-name')[0].value;
@@ -257,6 +431,12 @@ $(document).ready(function() {
       console.log($('#collection-name')[0].value);
       console.log(document.getElementById('collection-name').value);*/
     });
+
+    /*$("#droppable").droppable({
+      drop: function( event, ui ) {
+        console.log(ui.draggable[0].innerHTML);
+      }
+    });*/
 
     getParkings(function() {
       setParkings();

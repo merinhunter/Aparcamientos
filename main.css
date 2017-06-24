@@ -99,3 +99,19 @@ input {
 td h2, td h3 {
   margin: 0 0 5px 0;
 }
+
+.draggable, .draggable-nonvalid {
+  width: 464.333px;
+  height: 34px;
+}
+
+#collection-info {
+  min-height: 450px;
+  max-height: 450px;
+}
+
+.droppable {
+  min-height: 400px;
+  max-height: 400px;
+  overflow-y: scroll;
+}
