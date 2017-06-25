@@ -1,9 +1,9 @@
 var homeHTML = '<table><tr><td rowspan="2"><div id="home_scroll" class=scrollable></div></td><td><div id="description_home"></div></td><td><div id="carousel_home" class="carousel slide" data-ride="carousel"></div></td></tr><tr><td><div id="map"></div></td><td><div id="collection_home"></div></td></tr></table>';
 var carouselHTML = '<ol id ="carousel-indicators" class="carousel-indicators"></ol><div id="carousel-inner" class="carousel-inner"></div><a class="left carousel-control" href="#carousel_home" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Previous</span></a><a class="right carousel-control" href="#carousel_home" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Next</span></a>';
-var parkings=[];
-var images=[];
-var collections=[];
-var gUsers=[];
+var github_buttons = '<button type="button" class="btn btn-primary btn-lg" id="save"><i class="fa fa-github" aria-hidden="true"></i> Guardar</button><button type="button" class="btn btn-primary btn-lg" id="load"><i class="fa fa-github" aria-hidden="true"></i> Cargar</button>';
+var parkings = [];
+var images = [];
+var collections = [];
 var map;
 
 function Collection(name) {
@@ -19,16 +19,12 @@ function Facility(parking) {
   this.street = parking.address["street-address"];
   this.coordinates = new Coordinates(parking.location);
   this.description = parking.organization["organization-desc"];
-  this.gUsers = [];
+  this.users = [];
 }
 
 function Coordinates(location) {
   this.latitude = location.latitude;
   this.longitude = location.longitude;
-}
-
-function GUser(name) {
-  this.name = name;
 }
 
 function getParkings(callback) {
@@ -62,7 +58,7 @@ function getParkingByName(name) {
 }
 
 function getUserByName(name) {
-  var result = $.grep(gUsers, function(e){return e.name == name;});
+  var result = $.grep(users, function(e){return e.name == name;});
   return result[0];
 }
 
@@ -89,7 +85,7 @@ function setUsers(parking) {
   var list = document.createElement('div');
   list.className = "droppable";
 
-  $.each(parking.gUsers, function(i, item) {
+  $.each(parking.users, function(i, item) {
     var node = document.createElement('input');
     node.className = "btn btn-default";
     node.type = "button";
@@ -103,7 +99,7 @@ function setUsers(parking) {
       var name = ui.draggable[0].innerHTML;
 
       if(!isAsigned(name, parking)) {
-        parking.gUsers.push(getUserByName(name));
+        parking.users.push(getUserByName(name));
 
         setUsers(parking);
       }
@@ -168,7 +164,6 @@ function setMain(parking) {
   descNode.appendChild(pc);
 
   getImages(parking, function() {
-    console.log(images.length);
     if(images.length > 0) {
       setCarousel();
     }
@@ -264,7 +259,7 @@ function setCollectionInfo(collection) {
   document.getElementById("collection-info").appendChild(list);
 }
 
-function updateCollectionsLists(name) {
+/*function updateCollectionsLists(name) {
   var input = document.createElement('input');
   input.className = "btn btn-default";
   input.type = "button";
@@ -277,7 +272,7 @@ function updateCollectionsLists(name) {
   node.type = "button";
   node.value = name;
   list.appendChild(node);
-}
+}*/
 
 function isInCollection(name, collection) {
   var result = $.grep(collection.parkings, function(e){return e.title == name;});
@@ -288,7 +283,7 @@ function isInCollection(name, collection) {
 }
 
 function isAsigned(name, parking) {
-  var result = $.grep(parking.gUsers, function(e){return e.name == name;});
+  var result = $.grep(parking.users, function(e){return e.name == name;});
   if (result.length == 0) {
     return false;
   }
@@ -377,6 +372,8 @@ function insertInMap(parking) {
     .openPopup()
     .on({click: function() {
       setMain(parking);
+      setInfo(parking);
+      setUsers(parking);
     }});
 
   map.flyTo([latitude, longitude], 15);
@@ -402,6 +399,76 @@ function createCollection(name) {
   document.getElementById("collections_scroll").appendChild(input);
 }
 
+function parkingsWithUsers() {
+  var result = $.grep(parkings, function(e){return e.users.length != 0;});
+  return result;
+}
+
+function save() {
+  var token = $("#gittoken").val();
+  var user = $("#gituser").val();
+  var repo = $("#gitrepo").val();
+  var file = $("#gitfile").val();
+
+  var github = new Github({
+    token: token,
+    auth: "oauth"
+  });
+
+  var data = {
+    collections: collections,
+    parkings: parkingsWithUsers()
+  }
+  var content = JSON.stringify(data);
+
+  var myrepo = github.getRepo(user, repo);
+  myrepo.write('master', file, content, "Updating data",
+    function(err) {
+      console.log(err);
+    });
+}
+
+function load() {
+  var token = $("#gittoken").val();
+  var user = $("#gituser").val();
+  var repo = $("#gitrepo").val();
+  var file = $("#gitfile").val();
+
+  var github = new Github({
+    token: token,
+    auth: "oauth"
+  });
+
+  var myrepo = github.getRepo(user, repo);
+  myrepo.read('master', file,
+    function(err, data) {
+      data = JSON.parse(data);
+      loadData(data);
+    });
+}
+
+function loadData(data) {
+  //console.log(data.collections);
+  collections = data.collections;
+  updateCollections();
+
+  $.each(data.parkings, function(i, item) {
+    getParkingByName(item.title).users = item.users;
+  });
+}
+
+function updateCollections() {
+  $.each(collections, function(i, item) {
+    var input = document.createElement('input');
+    input.className = "btn btn-default";
+    input.type = "button";
+    input.value = item.name;
+    input.onclick = markCollection;
+
+    document.getElementById("collections_scroll").appendChild(input);
+  });
+}
+
 $(document).ready(function() {
   $("#init").click(function() {
     $("#home").html(homeHTML);
@@ -410,6 +477,7 @@ $(document).ready(function() {
     $("#facilities_li").removeClass("disabled");
     $("#facilities_a").attr("data-toggle", "tab");
     $("#carousel_home").html(carouselHTML);
+    $("#footer").append(github_buttons);
     //$("#draggable").draggable();
 
     $("#create-collection").click(function() {
@@ -432,11 +500,50 @@ $(document).ready(function() {
       console.log(document.getElementById('collection-name').value);*/
     });
 
-    /*$("#droppable").droppable({
-      drop: function( event, ui ) {
-        console.log(ui.draggable[0].innerHTML);
+    var modal = document.getElementById('githubModal');
+
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
       }
-    });*/
+    }
+
+    $("#save").click(function() {
+      $("#modal_title").html("Guardar configuración en GitHub");
+      $("#gittoken").val("");
+      $("#gituser").val("");
+      $("#gitrepo").val("");
+      $("#gitfile").val("");
+      modal.style.display = "block";
+
+      document.getElementById('submit').onclick = function() {
+        modal.style.display = "none";
+        save();
+      };
+      //console.log('{"collections":' + JSON.stringify(collections) + ', "parkings":' + JSON.stringify(parkings) + "}");
+    });
+
+    $("#load").click(function() {
+      $("#modal_title").html("Cargar configuración desde GitHub");
+      $("#gittoken").val("");
+      $("#gituser").val("");
+      $("#gitrepo").val("");
+      $("#gitfile").val("");
+      modal.style.display = "block";
+
+      document.getElementById('submit').onclick = function() {
+        modal.style.display = "none";
+        load();
+      };
+      //console.log(JSON.parse(JSON.stringify(collections)));
+      //console.log(JSON.parse(JSON.stringify(parkings)));
+    });
 
     getParkings(function() {
       setParkings();

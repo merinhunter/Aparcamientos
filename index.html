@@ -11,9 +11,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-  <!-- Slick CSS -->
-  <!--link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css" type="text/css"/-->
-  <link rel="stylesheet" href="main.css" type="text/css" />
+  <link rel="stylesheet" href="css/main.css" type="text/css" />
 </head>
 <body>
   <div class="page-header" id="header">
@@ -77,6 +75,8 @@
             </td>
             <td>
               <div>
+                <i id='google_button' class="fa fa-google-plus-official fa-4x" aria-hidden="true"></i>
+                <div id='users'></div>
               </div>
             </td>
             <td>
@@ -91,9 +91,37 @@
     </div>
   </div>
 
-  <div id="footer">
-    <button type="button" class="btn btn-primary btn-lg" id="save"><i class="fa fa-github" aria-hidden="true"></i> Guardar</button>
-    <button type="button" class="btn btn-primary btn-lg" id="load"><i class="fa fa-github" aria-hidden="true"></i> Cargar</button>
+  <div id="footer"></div>
+
+  <div id="githubModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h2 id="modal_title">Guardar configuración en GitHub</h2>
+      </div>
+      <div class="modal-body">
+        <form>
+         Token:<br>
+         <input type="text" name="token" id="gittoken">
+         <br>
+         Usuario:<br>
+         <input type="text" name="user" id="gituser">
+         <br>
+         Repositorio:<br>
+         <input type="text" name="repositoty" id="gitrepo">
+         <br>
+         Fichero:<br>
+         <input type="text" name="file" id="gitfile">
+         <br><br>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-lg" id="submit">OK</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- jQuery -->
@@ -104,8 +132,9 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-  <!-- Slick JS -->
-  <!--script src="https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js" type="text/javascript"></script-->
-  <script src="main.js" type="text/javascript"></script>
+  <script src="js/WebSocketClient.js" type="text/javascript"></script>
+  <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+  <script src="js/github.js" type="text/javascript"></script>
+  <script src="js/main.js" type="text/javascript"></script>
 </body>
 </html>
