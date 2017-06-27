@@ -5,6 +5,6 @@
 * **Usuario laboratorio:** merino
 * **Usuario GitHub:** merinhunter
 
-#### [Vídeo](https://merinhunter.github.io/Aparcamientos)
+#### [Vídeo](https://youtu.be/apHiq4N-Y2c)
 
 #### [Demo](https://merinhunter.github.io/Aparcamientos)

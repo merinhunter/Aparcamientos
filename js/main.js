@@ -33,15 +33,6 @@ function getParkings(callback) {
 
     for(item of data) {
       parkings.push(new Facility(item));
-
-      /*var input = document.createElement('input');
-      input.className = "btn btn-default";
-      input.type = "button";
-      input.value = item.title;
-      input.id = item.id;
-      input.onclick = markSelection;
-
-      document.getElementById("home_scroll").appendChild(input);*/
     }
     callback();
   });
@@ -63,7 +54,6 @@ function getUserByName(name) {
 }
 
 function markCollection() {
-  //console.log(this.value);
   var collection = getCollectionByName(this.value);
 
   setCollectionInfo(collection);
@@ -146,9 +136,6 @@ function setInfo(parking) {
 function setMain(parking) {
   var descNode = document.getElementById("description_home");
   descNode.innerHTML = "";
-  /*while (descNode.firstChild) {
-    descNode.removeChild(descNode.firstChild);
-  }*/
 
   var name = document.createElement('h2');
   name.innerHTML = parking.title;
@@ -195,31 +182,15 @@ function setCollectionHome(collection) {
 
 function setCollectionInfo(collection) {
   document.getElementById("collection-info").innerHTML = "";
-  //document.getElementById("collection_home").innerHTML = "";
 
   var title = document.createElement('h1');
   title.innerHTML = collection.name;
   document.getElementById("collection-info").appendChild(title);
 
-  /*var title_home = document.createElement('h3');
-  title_home.innerHTML = collection.name;
-  document.getElementById("collection_home").appendChild(title_home);*/
-
-  /*var list_collections_home = document.createElement('div');
-  list_collections_home.className = "scrollable";*/
-
   var list = document.createElement('div');
   list.className = "droppable";
 
   $.each(collection.parkings, function(i, item) {
-    /*var input = document.createElement('input');
-    input.className = "btn btn-default";
-    input.type = "button";
-    input.value = item.title;
-    input.onclick = markSelection;
-
-    list_collections_home.appendChild(input);*/
-
     var node = document.createElement('input');
     node.className = "btn btn-default";
     node.type = "button";
@@ -230,24 +201,10 @@ function setCollectionInfo(collection) {
 
   $(list).droppable({
     drop: function( event, ui ) {
-      //console.log(ui.draggable[0].innerHTML);
       var name = ui.draggable[0].innerHTML;
 
       if(!isInCollection(name, collection)) {
         collection.parkings.push(getParkingByName(name));
-
-        /*var input = document.createElement('input');
-        input.className = "btn btn-default";
-        input.type = "button";
-        input.value = name;
-        input.onclick = markSelection;
-        list_collections_home.appendChild(input);
-
-        var node = document.createElement('input');
-        node.className = "btn btn-default";
-        node.type = "button";
-        node.value = name;
-        list.appendChild(node);*/
 
         setCollectionHome(collection);
         setCollectionInfo(collection);
@@ -255,24 +212,8 @@ function setCollectionInfo(collection) {
     }
   });
 
-  //document.getElementById("collection_home").appendChild(list_collections_home);
   document.getElementById("collection-info").appendChild(list);
 }
-
-/*function updateCollectionsLists(name) {
-  var input = document.createElement('input');
-  input.className = "btn btn-default";
-  input.type = "button";
-  input.value = name;
-  input.onclick = markSelection;
-  list_collections_home.appendChild(input);
-
-  var node = document.createElement('input');
-  node.className = "btn btn-default";
-  node.type = "button";
-  node.value = name;
-  list.appendChild(node);
-}*/
 
 function isInCollection(name, collection) {
   var result = $.grep(collection.parkings, function(e){return e.title == name;});
@@ -291,7 +232,6 @@ function isAsigned(name, parking) {
 }
 
 function setCarousel() {
-  //$("#carousel_home").html(carouselHTML);
   document.getElementById("carousel-indicators").innerHTML = "";
   document.getElementById("carousel-inner").innerHTML = "";
 
@@ -350,7 +290,6 @@ function getImages(parking, callback) {
 
     $.each(data, function(i, item) {
       images.push(item.imageinfo[0].url);
-      //console.log(item.imageinfo[0].url);
     });
 
     callback();
@@ -448,7 +387,6 @@ function load() {
 }
 
 function loadData(data) {
-  //console.log(data.collections);
   collections = data.collections;
   updateCollections();
 
@@ -478,7 +416,11 @@ $(document).ready(function() {
     $("#facilities_a").attr("data-toggle", "tab");
     $("#carousel_home").html(carouselHTML);
     $("#footer").append(github_buttons);
-    //$("#draggable").draggable();
+
+    getParkings(function() {
+      setParkings();
+    });
+    loadMap();
 
     $("#create-collection").click(function() {
       var name = $('#collection-name')[0].value;
@@ -494,10 +436,6 @@ $(document).ready(function() {
       }
 
       createCollection(name);
-
-      /*console.log(getCollectionByName($('#collection-name')[0].value));
-      console.log($('#collection-name')[0].value);
-      console.log(document.getElementById('collection-name').value);*/
     });
 
     var modal = document.getElementById('githubModal');
@@ -526,7 +464,6 @@ $(document).ready(function() {
         modal.style.display = "none";
         save();
       };
-      //console.log('{"collections":' + JSON.stringify(collections) + ', "parkings":' + JSON.stringify(parkings) + "}");
     });
 
     $("#load").click(function() {
@@ -541,13 +478,6 @@ $(document).ready(function() {
         modal.style.display = "none";
         load();
       };
-      //console.log(JSON.parse(JSON.stringify(collections)));
-      //console.log(JSON.parse(JSON.stringify(parkings)));
     });
-
-    getParkings(function() {
-      setParkings();
-    });
-    loadMap();
   });
 });
